@@ -1,0 +1,11 @@
+createLine = (width) ->
+		testString = ""
+		for x in [0..width]
+			testString += "a"	
+		testString	
+
+	createDisplay = () ->		
+		makeString = "me"
+		for x in [0..30]
+			makeString += createLine(60) + "\n"			
+		makeString
