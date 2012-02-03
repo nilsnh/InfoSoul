@@ -22,10 +22,12 @@ h2 {
 	max-width: 610px;
 	background: #949494;
 	padding: 22px 15px 18px 15px;
-	/*
-	font: 15px/14px 'VerilySerifMonoBook', Arial, sans-serif;letter-spacing: 3px;
-	*/
 	font-family: 'VerilySerifMonoBook',monospace; 
 	font-size: 1em;
+	margin-bottom: 18px;
+}
+
+#debug {
+	/*visibility: hidden;*/
 }
 

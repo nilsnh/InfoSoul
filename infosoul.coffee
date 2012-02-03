@@ -1,21 +1,23 @@
 
 globalBoard = ""
 globalMyPos = []
-globalMyPos[0] = 0
-globalMyPos[1] = 0
+globalMyPos[0] = 15
+globalMyPos[1] = 5
 
 gGoalPos = []
-gGoalPos[0] = 14
+gGoalPos[0] = 0
 gGoalPos[1] = 0
 
 godmode = false
+started = false
+dead = false
 
 p1Texture = "me"
 goalTexture = "me"
 
 createDisplayText = () ->
 	tmp = "
-	ButImustexpla*ntoyouhowallthismistakenideaofdenouncingpleasu" + "\n" + "
+	ButImustexplaintoyouhowallthismistakenideaofdenouncingpleasu" + "\n" + "
 	reandpraisingpainwasbornandIwillgiveyouacompleteaccountofthe" + "\n" + "
 	system,andexpoundtheactualteachingsofthegreatexplorerofthetr" + "\n" + "
 	uth,themasterbuilderofhumanhappiness.Noonerejects,dislikes,o" + "\n" + "
@@ -31,23 +33,23 @@ createDisplayText = () ->
 	cesnoresultantplea.pleasurerationally.encounterconsequencest" 
 	tmp.toUpperCase()
 
-createDisplayText = () ->
+createStartText = () ->
 	tmp = "
-	ButImustexpla*ntoyouhowallthismistakenideaofdenouncingpleasu" + "\n" + "
+	ButImustexplaintoyouhowallthismistakenideaofdenouncingpleasu" + "\n" + "
 	reandpraisingpainwasbornandIwillgiveyouacompleteaccountofthe" + "\n" + "
-	system,andexpoundtheactualteachingsofthegreatexplorerofthetr" + "\n" + "
-	uth,themasterbuilderofhumanhappiness.Noonerejects,dislikes,o" + "\n" + "
-	ravoidspleasureitself,becauseitispleasure,butbecausethosewho" + "\n" + "
-	donotknowhowtopursuepleasurerationallyencounterconsequencest" + "\n" + "
-	hatareextremelypainful.Noragainisthereanyonewholovesorpursue" + "\n" + "
-	sordesirestoobtainpainofitself,becauseitispain,butbecauseocc" + "\n" + "
-	asionallycircumstancesoccurinwhichtoilandpaincanprocurehimso" + "\n" + "
+	syst________________________achingsofthegreatexplorerofthetr" + "\n" + "
+	uth,__use the arrowkeys_____appiness.Noonerejects,dislikes,o" + "\n" + "
+	ravo________________________eitispleasure,butbecausethosewho" + "\n" + "
+	dono__find yourself_________rationallyencounterconsequencest" + "\n" + "
+	hata________________________ainisthereanyonewholovesorpursue" + "\n" + "
+	sord__press 1 to start______lf,becauseitispain,butbecauseocc" + "\n" + "
+	asio________________________nwhichtoilandpaincanprocurehimso" + "\n" + "
 	megreatpleasure.Totakeatrivialexample,whichofuseverundertake" + "\n" + "
 	slaboriousphysicalexercise,excepttoobtainsomeadvantagefromit" + "\n" + "
 	Butwhohasanyrighttofindfaultwithamanwhochoosestoenjoyapleasu" + "\n" + "
 	rethathasnoannoyingconsequences,oronewhoavoidsapainthatprodu" + "\n" + "
 	cesnoresultantplea.pleasurerationally.encounterconsequencest" 
-	tmp.toUpperCase()
+	tmp.toLowerCase()
 
 createWinPicture = () ->
 	tmp = "
@@ -70,11 +72,11 @@ createLosePicture = () ->
 	tmp = "
 	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
 	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
-	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
-	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
-	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
-	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
-	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
+	XXXX________________________XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
+	XXXX__Lost in interwebs x_X XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
+	XXXX________________________XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
+	XXXX__Press 1 to restart____XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
+	XXXX________________________XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
 	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
 	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
 	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\n" + "
@@ -85,6 +87,7 @@ createLosePicture = () ->
 
 makeWinState = () ->
 	globalBoard = createWinPicture()
+	godmode = true
 	p1Texture = "ME"
 	goalTexture = "__"
 	gGoalPos[0] = 0
@@ -96,7 +99,9 @@ makeLoseState = () ->
 	globalBoard = createLosePicture()
 	p1Texture = "XX"
 	goalTexture = "XX"
-	drawBoard(globalBoard,389)
+	dead = true
+	started = false
+	drawBoard(globalBoard,440)
 
 checkWin = () ->
 	test1x = globalMyPos[0]
@@ -119,28 +124,36 @@ setMyPos = (x, y) ->
 	drawBoard(globalBoard,newPos)
 	
 
-drawBoard = (gbStr, strPos) ->	
+drawBoard = (InpGbBoard, strPos) ->	
 	#Insert player
-	leftStr = gbStr[0..strPos--]
-	rightStr = gbStr[strPos+4..gbStr.length]
+	leftStr = InpGbBoard[0..strPos--]
+	rightStr = InpGbBoard[strPos+4..InpGbBoard.length]
 	newBoard = leftStr + 
 	p1Texture + rightStr 
 
-	#Insert goal
-	leftStr = newBoard[0..gGoalPos[0]]
-	rightStr = newBoard[gGoalPos[0]+3..newBoard.length]
+	#Insert goal, but first make sure the goal is placed right.
+	newGoalPos = gGoalPos[0] + gGoalPos[1]*62
+	leftStr = newBoard[0..newGoalPos--]
+	rightStr = newBoard[newGoalPos+4..newBoard.length]
+	
 	newBoard = "<div id=\"gamediv\">" + leftStr + 
 	goalTexture + rightStr + "</div>"
-
 	$('#gamediv').replaceWith(newBoard)
 
-$(document).ready ->
-	globalBoard = createDisplayText()
-	setMyPos(globalMyPos[0],globalMyPos[1])	
+	tmpString = "<p id=\"winPos\">Where to I need to get to: " + gGoalPos[0] + ", " + gGoalPos[1] + "</p>"
+	$('#winPos').replaceWith(tmpString)		
 
-	#$('#gamediv').append(drawBoard(globalBoard, 5))	
-	#alert globalMyPos[0]
+init = () ->
+	globalBoard = createStartText()
+	godmode = false	
+	p1Texture = "me"
+	goalTexture = "me"
+	newBoard = "<div id=\"gamediv\">" + globalBoard + "</div>"
+	$('#gamediv').replaceWith(newBoard)
 	
+
+$(document).ready ->
+	init()	
 
 
 #up-right-down-left -> 38, 39, 40, 37
@@ -148,28 +161,45 @@ document.onkeydown = (event)->
 	switch event.keyCode
 		when 37			
 			$('#keydebug').replaceWith("<p id=\"keydebug\">Key pressed: Left</p>")
-			globalMyPos[0]--
-			setMyPos(globalMyPos[0], globalMyPos[1])
-			makeMonster()
-			checkMonster()
+			if started
+				globalMyPos[0]--			
+				setMyPos(globalMyPos[0], globalMyPos[1])
+				makeMonster()
+				checkMonster()
 		when 38
 			$('#keydebug').replaceWith("<p id=\"keydebug\">Key pressed: Up</p>")
-			globalMyPos[1]--
-			setMyPos(globalMyPos[0], globalMyPos[1])
-			makeMonster()
-			checkMonster()
+			if started
+				globalMyPos[1]--			
+				setMyPos(globalMyPos[0], globalMyPos[1])
+				makeMonster()
+				checkMonster()
 		when 39
 			$('#keydebug').replaceWith("<p id=\"keydebug\">Key pressed: Right</p>")
-			globalMyPos[0]++
-			setMyPos(globalMyPos[0], globalMyPos[1])
-			makeMonster()
-			checkMonster()
+			if started
+				globalMyPos[0]++			
+				setMyPos(globalMyPos[0], globalMyPos[1])
+				makeMonster()
+				checkMonster()
 		when 40
 			$('#keydebug').replaceWith("<p id=\"keydebug\">Key pressed: Down</p>")
-			globalMyPos[1]++
-			setMyPos(globalMyPos[0], globalMyPos[1])
-			makeMonster()
-			checkMonster()
+			if started
+				globalMyPos[1]++
+				setMyPos(globalMyPos[0], globalMyPos[1])
+				makeMonster()
+				checkMonster()
+		when 49
+			if dead				
+				init()
+				dead = false
+				started = false
+			if not started
+				started = true
+				globalBoard = createDisplayText()
+				
+				gGoalPos[0] = Math.floor(Math.random() * 50)
+				gGoalPos[1] = Math.floor(Math.random() * 11)
+
+				setMyPos(globalMyPos[0], globalMyPos[1])
 
 makeMonster = () ->
 	#Randomly place monster on map
@@ -192,4 +222,5 @@ checkMonster =() ->
 	monster = "*"
 	if underLeftFoot is monster or underRightFoot is monster
 		if not godmode
+			started = false
 			makeLoseState()
