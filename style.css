@@ -10,12 +10,18 @@
 
 }
 
+h2 {
+	margin: 15px 0 10px 0;
+}
+
 body {
 	background:#DEDEDE;
 }
 
-h2 {
-	margin: 15px 0 10px 0;
+#wrapper {
+	margin: 0 auto;
+	width: 630px;
+
 }
 
 #gamediv{
@@ -28,6 +34,6 @@ h2 {
 }
 
 #debug {
-	/*visibility: hidden;*/
+	visibility: hidden;
 }
 
